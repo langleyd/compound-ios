@@ -50,7 +50,22 @@ public struct CompoundColors {
     public let bgCanvas = compound.colorBgCanvas
     
     // MARK: - Custom
-    
+#if os(macOS)
+    /// The colour to use on the background of a Form or grouped List.
+    ///
+    /// This colour is a special case as it uses `colorBgSecondary` in light mode and `???` in dark mode.
+    public let formBackground = Color(NSColor(name: "formBackground", dynamicProvider: { appearance in
+        let basicAppearance = appearance.bestMatch(from: [.aqua,.darkAqua])
+        return basicAppearance == .aqua ? NSColor(compound.colorBgSecondary) : NSColor(compound.colorBgCanvas)
+    }))
+    /// The background colour of a row in a Form or grouped List.
+    ///
+    /// This colour is a special case as it uses `colorBgCanvas` in light mode and `???` in dark mode.
+    public let formRowBackground = Color(NSColor(name: "formRowBackground", dynamicProvider: { appearance in
+        let basicAppearance = appearance.bestMatch(from: [.aqua,.darkAqua])
+        return basicAppearance == .aqua ? NSColor(compound.colorBgCanvas) : NSColor(compound.colorBgSecondary)
+    }))
+#else
     /// The colour to use on the background of a Form or grouped List.
     ///
     /// This colour is a special case as it uses `colorBgSecondary` in light mode and `???` in dark mode.
@@ -64,4 +79,8 @@ public struct CompoundColors {
     public var formRowBackground = Color(UIColor { collection in
         collection.userInterfaceStyle == .light ? UIColor(compound.colorBgCanvas) : UIColor(compound.colorBgSecondary)
     })
+#endif
+    
+
+
 }
